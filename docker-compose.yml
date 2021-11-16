@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+    nodejs-app:
+        build:
+          context: ./
+          dockerfile: Dockerfile 
+        container_name: nodejsserver
+        hostname: nodejsserver
+        ports:
+            - "3000:3000" 
+    nginx:
+        build:
+          context: ./
+          dockerfile: nginxdockerfile
+        container_name: nginx
+        hostname: nginx
+        ports:
+            - "80:80" 

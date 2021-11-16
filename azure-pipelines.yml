@@ -1,0 +1,71 @@
+trigger:
+- none
+
+resources:
+- repo: self
+
+stages:
+- stage: Test_stage
+  displayName: Test stage
+  jobs:  
+  - job: Test
+    displayName: 'Testing'
+    pool:
+      name: 'Default'
+    steps:
+      - task: Bash@3
+        inputs:
+          targetType: 'inline'
+          script: |
+            make test-app
+        continueOnError: false
+
+- stage: Docker_stage
+  displayName: Image building
+  jobs:  
+  - job: Docker
+    displayName: 'Building'
+    pool:
+      name: 'Default'
+    steps:
+      - task: Bash@3
+        inputs:
+          targetType: 'inline'
+          script: |
+            make build-image
+          failOnStderr: true
+
+- stage: Terraform_stage
+  displayName: Creating rbac with terraform
+  jobs:  
+  - job: Before_k8s
+    displayName: 'Building'
+    pool:
+      name: 'Default'
+    steps:
+      - task: Bash@3
+        inputs:
+          targetType: 'inline'
+          script: |
+            make terraform
+          failOnStderr: false
+
+# - stage: Deploy_stage
+#   displayName: Kubernetes deployment
+#   jobs:  
+#   - job: Deploying_k8s_aws
+#     displayName: 'Building'
+#     pool:
+#       name: 'Default'
+#     steps:
+#       - task: Bash@3
+#         inputs:
+#           targetType: 'inline'
+#           script: |
+#             make deploy_k8s_aws
+#             echo "===================================================================================================="
+#             echo Se acaba de generar un despliegue en EKS fargate desde un agente que contiene todas las dependencias\n
+#             echo y puesto que no tuve tiempo para implemnetar ingress con helm puedes testear la aplicación así!
+#             kubectl get pods -n node-nginx --as=clm
+#             kubectl run -i --tty busybox --image=busybox --restart=Never -- /bin/sh -c "for i in {1..4}; do curl http://app-node-svc:3000"; done
+#           failOnStderr: false

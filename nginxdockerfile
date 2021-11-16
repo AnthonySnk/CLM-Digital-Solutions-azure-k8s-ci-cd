@@ -1,0 +1,5 @@
+FROM nginx
+COPY ./default.conf /etc/nginx/conf.d/
+RUN apt update -y &&\
+    apt install apache2-utils -y &&\
+    echo "mypass" | htpasswd -c -i /etc/nginx/.htpasswd admin

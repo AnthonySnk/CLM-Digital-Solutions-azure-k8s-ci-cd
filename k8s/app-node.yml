@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-node-deployment
+  labels:
+    app: my-node
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-node
+  template:
+    metadata:
+      labels:
+        app: my-node
+    spec:
+      containers:
+        - name: my-app
+          # image: reto-devops_nodejs-app:latest
+          image: daveti/node-app:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 200m
+            limits:
+              memory: 256Mi
+              cpu: 500m
+          readinessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000

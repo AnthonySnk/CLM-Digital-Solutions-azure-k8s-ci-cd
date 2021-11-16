@@ -1,0 +1,19 @@
+# Dockerfiles
+Dockerfile*
+docker-compose*.yml
+nginxdockerfile
+nodejsdockerfile
+
+# Makefile
+Makefile
+
+# Markdown
+*.md
+
+# folders
+img
+
+# Varios
+.dockerignore
+.git
+.gitignore
